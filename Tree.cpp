@@ -134,8 +134,8 @@ bool QueueEmpty(Queue* pq)
     else
         return false;
 }
-
-/* ************************************************* */
+/**************************************************************************/
+/* *******************************二叉树的实现************************* */
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -175,6 +175,7 @@ void PostOrder(BTNode* root)
 	PostOrder(root->right);
 	printf("%c ",root->data);
 }
+//创建树节点
 BTNode* CreatNode(BTDataType x)
 {
 	BTNode* newnode = (BTNode*)malloc(sizeof(BTNode));
@@ -182,6 +183,24 @@ BTNode* CreatNode(BTDataType x)
 	newnode->left = NULL;
 	newnode->right = NULL;
 	return newnode;
+}
+//叶子个数
+int TreeLeafSize(BTNode* root)
+{
+    if(root == NULL)
+        return 0;
+    if(root->left == NULL && root->right == NULL)
+        return 1;
+    
+    return TreeLeafSize(root->left) + TreeLeafSize(root->right);
+}
+//节点个数
+int TreeSize(BTNode* root)
+{
+    if(root == NULL)
+        return 0;
+    else
+        return 1 + TreeSize(root->left) + TreeSize(root->right);
 }
 //层序遍历
 void BinaryTreeLevelOrder(BTNode* root)
@@ -268,6 +287,7 @@ int BinaryTreeComlete(BTNode* root)
     QueueDestroy(&q);
     return 1;
 }
+
 int main()
 {
 	BTNode* A = CreatNode('A');
@@ -291,8 +311,10 @@ int main()
     // PostOrder(A);
     // printf("\n");
     // BTNode*ret = BinaryTreeFind(A,'B');
-    // printf("%c",ret->data);
-    int a = BinaryTreeComlete(A);
+    // // printf("%c",ret->data);
+    // int a = BinaryTreeComlete(A);
+    // printf("%d",a);
+    int a = TreeSize(A);
     printf("%d",a);
 	return 0; 	
 }
