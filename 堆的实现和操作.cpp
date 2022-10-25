@@ -67,23 +67,29 @@ void adjustdown(HPDataType* a,int n,int root)//左右都为小堆
 		child  = 2*parent + 1;
 	}
 }
-void HeapSort(HPDataType*a,int n)
+//建小堆
+void BuildMinHeap(HPDataType*a,int n)
 {
-	//1.构建堆O(N)
 	for(int i = (n-1-1)/2;i >=0;i--)
 	{
 		adjustdown(a,n,i);
 	}
+}
+//堆排序，降序
+void HeapSort(HPDataType*a,int n)
+{
+	//1.构建堆O(N)
+	BuildMinHeap(a,n);
 	//2.每次取出最小值，放到数组最后NlogN
-	// int end = n - 1;
-	// while(end > 0)
-	// {
-	// 	swap(&a[0],&a[end]);//取出最小值，放到数组最后
+	int end = n - 1;
+	while(end > 0)
+	{
+		swap(&a[0],&a[end]);//取出最小值，放到数组最后
 		
-	// 	//继续去次小的数
-	// 	adjustdown(a,end,0);
-	// 	end--;
-	// }
+		//继续去次小的数
+		adjustdown(a,end,0);
+		end--;
+	}
 	
 }
 void HeapInit(Heap*php,HPDataType*a,int n)
