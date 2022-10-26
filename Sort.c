@@ -2,7 +2,7 @@
  * @Author: error: git config user.name && git config user.email & please set dead value or install git
  * @Date: 2022-10-24 19:50:54
  * @LastEditors: error: git config user.name && git config user.email & please set dead value or install git
- * @LastEditTime: 2022-10-25 22:29:04
+ * @LastEditTime: 2022-10-26 21:16:48
  * @FilePath: /CCODE/object/Sort.c
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -95,13 +95,62 @@ void ShellSort(int* a,int n)
     }
 }
 /********************************选择排序**************************************/
+//选择
+void SelectSort(int* a,int begin,int end)
+{
+;
+}
+//堆排序
+//1.向下调整算法(小堆)
+void Adjustdown(int* a,int n,int root)
+{
+    int parent = root;
+    int child = 2 * parent + 1;
+    while(child < n)
+    {
+        if(child+1 < n && a[child+1] < a[child])
+        {
+            child++;
+        }
+        if(a[child] < a[parent])
+        {
+            swap(&a[child],&a[parent]);
+            parent = child;
+            child = 2*parent + 1;
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+//2.构建小堆
+void BuildMinheap(int* a,int n)
+{
+    for(int i = (n-2)/2;i >= 0;i--)
+    {
+        Adjustdown(a,n,i);
+    }
+}
+//3.堆排序
+void HeapSort(int* a,int n)
+{
+    BuildMinheap(a,n);
 
+    int end = n-1;
+    while(end > 0)
+    {
+        swap(&a[0],&a[end]);
+        Adjustdown(a,end,0);
+        end--;
+    }
 
+}
 /*********************************快排**************************************/
 //快速排序
-//1.单趟排序   得到左边都比4小，右边都比4大 
+//1.单趟排序(左右指针)   得到左边都比4小，右边都比4大 
 // 2 3 8 5 1 4 -> 2 3 1  4   8 5
-int PartSort(int* a,int begin,int end)
+int PartSort1(int* a,int begin,int end)
 {   
     int mid = GetMid(a,begin,end);
     swap(&a[mid],&a[end]);
@@ -123,14 +172,59 @@ int PartSort(int* a,int begin,int end)
 
     return begin;//返回key调整后的位置
 }
+//单趟排序(挖坑法) 2 3 8 5 1【4】 开始【4】为坑 
+//2 3  8 5 1【4】  
+//2 3【8】5 1 8 
+//2 3 1  5【1】8
+//2 3 1 【5】5 8
+//2 3 1  4  5 8
+int PartSort2(int* a,int begin,int end)
+{
+    int mid = GetMid(a,begin,end);
+    swap(&a[mid],&a[end]);
+
+    int Key = a[end];
+    while(begin < end)
+    {
+        //begin找比key大的值，放到坑里
+        while(begin < end && a[begin] <= Key)  begin++;
+        a[end] = a[begin];
+        //end找比Key小的值，放到坑里
+        while(begin < end && a[end] >= Key)  end--;
+        a[begin] = a[end];
+    }
+    a[begin] = Key;
+    
+    return begin;
+}
+//单趟排序(前后指针法) 2 3 8 5 1 4
+int PartSort3(int* a,int begin,int end)
+{
+    int mid = GetMid(a,begin,end);
+    swap(&a[mid],&a[end]);
+    
+    int KeyIndex = end;
+    int Prev = begin - 1;
+    int cur = begin;
+    while(cur < end)
+    {
+        if(a[cur] < a[KeyIndex] && ++Prev != cur)
+        {
+            swap(&a[Prev],&a[cur]);
+        }
+        cur++;
+    }
+    swap(&a[++Prev],&a[KeyIndex]);
+
+    return Prev;
+}
 //2.整体（多趟） 利用递归实现
 void QuickSort(int* a,int left,int right)
 {
-    Print(a,6);
     if(left >= right)
         return;
     
-    int index = PartSort(a,left,right);
+    int index = PartSort3(a,left,right);
     QuickSort(a,left,index-1);
     QuickSort(a,index+1,right);
 }
@@ -160,12 +254,14 @@ int GetMid(int* a,int begin,int end)
 /********************************主函数**************************************/
 int main()
 {
-    int a[] = {6,5,4,3,2,1};
+    int a[] = {6,5,2,1,4,3};
     Print(a,sizeof(a)/sizeof(int));
     // InsertSort(a,sizeof(a)/sizeof(int));
     // Print(a,sizeof(a)/sizeof(int));
     //ShellSort(a,sizeof(a)/sizeof(int));
-    QuickSort(a,0,sizeof(a)/sizeof(int)-1);
+    //QuickSort(a,0,sizeof(a)/sizeof(int)-1);
+    HeapSort(a,sizeof(a)/sizeof(int));
+    Print(a,sizeof(a)/sizeof(int));
 
     return 0;
 }
