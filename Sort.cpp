@@ -320,6 +320,7 @@ void MergeSort(int* a,int n)
 {
 	int* tmp = (int*)malloc(sizeof(int)*n);
 	_MergeSort(a,0,n-1,tmp);
+	free(tmp);
 }
 //归并：非递归实现（注意边界）
 void MergeTwoArr(int* a,int begin1,int end1,int begin2,int end2,int* tmp)
@@ -370,6 +371,7 @@ void MergeSortNonR(int* a,int n)
 		}
 		gap *= 2;
 	}
+	free(tmp);
 }
 /********************************主函数**************************************/
 int main()
