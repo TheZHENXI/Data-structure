@@ -282,6 +282,95 @@ int GetMid(int* a,int begin,int end)
             return end;
     }
 }
+//归并：递归实现
+void _MergeSort(int* a,int left,int right,int* tmp)
+{
+	if(left >= right)
+		return ;
+	//将[left,mid]、[mid+1,right]分别排好序
+	int mid = (left+right)/2;
+	_MergeSort(a,left,mid,tmp);
+	_MergeSort(a,mid+1,right,tmp);
+	//将[left,mid]与[mid+1,right]合并排序
+	int begin1 = left,end1 = mid;
+	int begin2 = mid+1,end2 = right;
+	int index = begin1;
+	while(begin1 <= end1 && begin2 <= end2)
+	{
+		if(a[begin1] < a[begin2])
+			tmp[index++] = a[begin1++];
+		else
+			tmp[index++] = a[begin2++];
+	}
+	while(begin1 <= end1)
+	{
+		tmp[index++] = a[begin1++];
+	}
+	while(begin2 <= end2)
+	{
+		tmp[index++] = a[begin2++];
+	}
+	//将归并好的数组，拷贝到原数组
+	for(int i = left;i <= right;i++)
+	{
+		a[i] = tmp[i];
+	}
+}
+void MergeSort(int* a,int n)
+{
+	int* tmp = (int*)malloc(sizeof(int)*n);
+	_MergeSort(a,0,n-1,tmp);
+}
+//归并：非递归实现（注意边界）
+void MergeTwoArr(int* a,int begin1,int end1,int begin2,int end2,int* tmp)
+{
+    int left = begin1,right = end2;
+	int index = begin1;
+	while(begin1 <= end1 && begin2 <= end2)
+	{
+		if(a[begin1] < a[begin2])
+			tmp[index++] = a[begin1++];
+		else
+			tmp[index++] = a[begin2++];
+	}
+	while(begin1 <= end1)
+	{
+		tmp[index++] = a[begin1++];
+	}
+	while(begin2 <= end2)
+	{
+		tmp[index++] = a[begin2++];
+	}
+	//将归并好的数组，拷贝到原数组
+	for(int i = left;i <= right;i++)
+	{
+		a[i] = tmp[i];
+	}
+}
+void MergeSortNonR(int* a,int n)
+{
+	int* tmp = (int*)malloc(sizeof(int)*n);
+	int gap = 1;
+	while(gap < n)
+	{
+		for(int i = 0;i < n;i += 2*gap)//单趟合并
+		{
+			//[i,i+gap-1] [i+gap,i+2*gap-1]
+			int begin1 = i,end1 = i+gap-1;
+			int begin2 = i+gap,end2 = i+2*gap-1;
+			//合并时只有第一组，第二组不存在，便不需要合并
+			//例如gap =2 时，防止 2 6 4 8 6 7 这种情况
+			if(begin2 >=n)
+				break;
+			//合并时第二组的数组只有部分数据，需要修正end2的边界
+			//防止 2 6 4 8 6 7 1 这种情况
+			if(end2 >= n)
+				end2 = n-1;
+			MergeTwoArr(a,begin1,end1,begin2,end2,tmp);
+		}
+		gap *= 2;
+	}
+}
 /********************************主函数**************************************/
 int main()
 {
