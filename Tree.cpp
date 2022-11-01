@@ -202,7 +202,8 @@ int TreeSize(BTNode* root)
     else
         return 1 + TreeSize(root->left) + TreeSize(root->right);
 }
-//层序遍历
+//层序遍历：进队列root，然后Pop一个，带进去两个（左、右）
+//[1]  [2,3]  [3,4,5] [4,5]  [5]  [NULL]
 void BinaryTreeLevelOrder(BTNode* root)
 {
     Queue q;
@@ -224,7 +225,7 @@ void BinaryTreeLevelOrder(BTNode* root)
     }
     QueueDestroy(&q);
 }
-//第k层的节点个数
+//第k层的节点个数：等于k-1层 的左节点数+右节点数
 int BinaryTreeKSize(BTNode* root,int k)
 {
     if(root == 0)
