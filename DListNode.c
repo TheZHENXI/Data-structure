@@ -172,6 +172,7 @@ void testLNode1()
         LNDelete(pos);
     LNPrint(plist);
 }
+
 int main()
 {
 	testLNode1();
